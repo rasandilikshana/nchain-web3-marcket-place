@@ -81,7 +81,23 @@ You need these installed:
 
 ## 📚 Documentation
 
-All documentation is in the `docs/` folder:
+### 🏗️ System Architecture
+
+**[ARCHITECTURE.md](ARCHITECTURE.md)** - Complete system architecture guide
+
+Want to understand how everything works together?
+- 📐 High-level architecture diagrams showing all components
+- 🔄 Data flow diagrams (minting gems, marketplace transactions)
+- 🧩 Component interaction maps
+- 📡 Complete API endpoint reference
+- 🗄️ Data models (Frontend, Backend, Blockchain)
+- 🔐 Security architecture layers
+- ⚡ Performance metrics and capacity planning
+- 🚀 Production deployment architecture
+
+### 📖 Other Documentation
+
+All other documentation is in the `docs/` folder:
 
 - **[docs/START_HERE.md](docs/START_HERE.md)** - Quick start guide
 - **[docs/HOW_TO_TEST.md](docs/HOW_TO_TEST.md)** - Complete testing guide
