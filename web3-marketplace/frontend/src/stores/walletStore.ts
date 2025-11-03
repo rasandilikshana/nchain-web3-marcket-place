@@ -21,21 +21,33 @@ export const useWalletStore = create<WalletState>()(
 
       connectWallet: async () => {
         try {
-          // In a real app, this would integrate with wallet provider
-          // For now, we'll use the first wallet from the blockchain
+          // Check if we already have a stored wallet
+          const currentAddress = get().address
+          if (currentAddress) {
+            // Already connected, just refresh balance
+            await get().refreshBalance()
+            toast.success('Wallet reconnected!')
+            return
+          }
+
+          // Get all wallets to let user choose
           const wallets = await api.get('/users')
 
-          if (wallets.data.data.length > 0) {
-            const wallet = wallets.data.data[0]
+          if (wallets.data.data && wallets.data.data.length > 0) {
+            // Use Alice wallet as default for testing
+            const aliceWallet = wallets.data.data.find((w: any) => w.name === 'Alice')
+            const wallet = aliceWallet || wallets.data.data[0]
+
             set({ address: wallet.address })
             await get().refreshBalance()
-            toast.success('Wallet connected!')
+            toast.success(`Connected as ${wallet.name || wallet.address}`)
           } else {
             // Create a new wallet
             const newWallet = await api.post('/users/wallet', {
               name: `User-${Date.now()}`
             })
-            set({ address: newWallet.data.data.address })
+            const address = newWallet.data.data.data?.address || newWallet.data.data.address
+            set({ address })
             toast.success('New wallet created!')
           }
         } catch (error) {

@@ -12,6 +12,7 @@ import gemRoutes from './routes/gemRoutes';
 import marketplaceRoutes from './routes/marketplaceRoutes';
 import userRoutes from './routes/userRoutes';
 import healthRoutes from './routes/healthRoutes';
+import testRoutes from './routes/testRoutes';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use('/api/health', healthRoutes);
 app.use('/api/gems', gemRoutes);
 app.use('/api/marketplace', marketplaceRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/test', testRoutes);
 
 // Error handling
 app.use(errorHandler);

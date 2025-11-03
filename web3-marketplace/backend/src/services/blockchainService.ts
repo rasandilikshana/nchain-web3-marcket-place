@@ -14,6 +14,21 @@ export class BlockchainService {
         'Content-Type': 'application/json',
       },
     });
+
+    // Add response interceptor for debugging
+    this.client.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        logger.error('Blockchain API Error:', {
+          url: error.config?.url,
+          method: error.config?.method,
+          data: error.config?.data,
+          status: error.response?.status,
+          responseData: error.response?.data,
+        });
+        return Promise.reject(error);
+      }
+    );
   }
 
   // Get blockchain info

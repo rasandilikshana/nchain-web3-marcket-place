@@ -50,11 +50,24 @@ router.post('/wallet', async (req: Request, res: Response, next: NextFunction) =
       throw new AppError('Wallet name is required', 400);
     }
 
-    const wallet = await blockchainService.createWallet(name);
+    const response = await blockchainService.createWallet(name);
+
+    // Extract wallet data from blockchain response
+    const walletData = response.data?.keypair || response.data;
+    const address = walletData?.public_key
+      ? Array.from(walletData.public_key as number[])
+          .map((b: number) => b.toString(16).padStart(2, '0'))
+          .slice(0, 8)
+          .join('')
+      : 'unknown';
 
     res.status(201).json({
       success: true,
-      data: wallet,
+      data: {
+        address,
+        name,
+        ...response.data,
+      },
     });
   } catch (error) {
     next(error);
@@ -64,7 +77,10 @@ router.post('/wallet', async (req: Request, res: Response, next: NextFunction) =
 // List all wallets
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const wallets = await blockchainService.listWallets();
+    const response = await blockchainService.listWallets();
+
+    // Extract data from blockchain response
+    const wallets = response.data || [];
 
     res.json({
       success: true,

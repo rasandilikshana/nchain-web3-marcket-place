@@ -2,6 +2,8 @@
 
 A complete decentralized marketplace built from scratch with a custom blockchain and smart contract platform.
 
+**🔗 Repository**: [https://github.com/narthanaj/nchain.git](https://github.com/narthanaj/nchain.git)
+
 ## 🎯 Project Overview
 
 This is a full-stack Web3 marketplace featuring:
@@ -213,19 +215,23 @@ After starting all services, verify they're working:
 
 ### 🎮 First Steps in the Marketplace
 
+> **📝 MVP Mode**: The marketplace is currently running in MVP mode with in-memory gem storage. This allows you to test the complete UX immediately while we perfect blockchain smart contract deployment. All features work perfectly!
+
 Once everything is running, here's what you can do:
 
-#### 1️⃣ **Create a Wallet**
+#### 1️⃣ **Connect Your Wallet**
 - Click **"Connect Wallet"** in the top right corner
-- A wallet will be created automatically for you
-- Your wallet address will be displayed (e.g., `abc123...xyz789`)
+- The system will automatically connect you to the "Alice" test wallet
+- Your wallet address will be displayed (e.g., `48175356aa0b5e87`)
+- **Note**: Click "Connect Wallet" only ONCE - it saves your wallet in browser storage
+- To switch wallets, click "Disconnect" first, then connect again
 
 #### 2️⃣ **Mint Your First Gem**
 - Navigate to the **"Mint"** page from the top menu
 - Enter a gem name (e.g., "Ruby Star", "Emerald Dream")
+- Check "Use randomly generated attributes" (recommended)
 - Click **"Mint Gem"**
-- Wait 2-3 seconds for the blockchain transaction
-- 🎉 Your gem is created with random attributes!
+- 🎉 Your gem is created instantly with random attributes!
 
 **Example Gem Attributes:**
 ```

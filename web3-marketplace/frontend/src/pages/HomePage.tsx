@@ -6,7 +6,7 @@ const HomePage = () => {
     <div className="space-y-16">
       {/* Hero Section */}
       <section className="text-center space-y-6 py-12">
-        <h1 className="text-6xl font-bold bg-gradient-to-r from-primary-400 to-secondary-500 bg-clip-text text-transparent">
+        <h1 className="text-6xl font-bold bg-gradient-to-r from-primary-400 to-secondary-500 bg-clip-text">
           Discover Rare Digital Gems
         </h1>
         <p className="text-xl text-gray-300 max-w-3xl mx-auto">

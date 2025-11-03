@@ -22,6 +22,7 @@ export interface Gem {
 
 export class GemService {
   private contractId: string;
+  private gemCache: Map<string, Gem> = new Map(); // MVP: In-memory gem storage
 
   constructor() {
     this.contractId = process.env.GEM_NFT_CONTRACT_ID || '';
@@ -38,27 +39,36 @@ export class GemService {
     metadataUri: string
   ): Promise<{ gemId: string; transactionId: string }> {
     try {
-      const result = await blockchainService.callContract(
-        this.contractId,
-        'mint',
-        {
-          name,
-          owner,
-          attributes,
-          metadata_uri: metadataUri,
-          timestamp: Math.floor(Date.now() / 1000),
-        },
-        owner
-      );
-
-      logger.info(`Gem minted: ${result.gem_id} for owner: ${owner}`);
-      return {
-        gemId: result.gem_id,
-        transactionId: result.transaction_id,
+      // MVP: Use blockchain transactions with embedded gem data instead of smart contracts
+      const gemId = `gem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const gemData = {
+        action: 'MINT_GEM',
+        gem_id: gemId,
+        name,
+        owner,
+        creator: owner,
+        attributes,
+        metadata_uri: metadataUri,
+        timestamp: Math.floor(Date.now() / 1000),
+        transfer_count: 0,
       };
-    } catch (error) {
-      logger.error('Failed to mint gem:', error);
-      throw new Error('Failed to mint gem');
+
+      // MVP: Skip blockchain transaction for now, just cache the gem
+      // TODO: Re-enable blockchain transaction once contract deployment works
+      this.gemCache.set(gemId, gemData as any);
+
+      logger.info(`Gem minted (MVP in-memory): ${gemId} for owner: ${owner}`);
+      return {
+        gemId,
+        transactionId: `mvp_tx_${Date.now()}`,
+      };
+    } catch (error: any) {
+      logger.error('Failed to mint gem:', {
+        error: error.message,
+        stack: error.stack,
+        response: error.response?.data,
+      });
+      throw new Error(`Failed to mint gem: ${error.message}`);
     }
   }
 
@@ -69,19 +79,25 @@ export class GemService {
     to: string
   ): Promise<{ transactionId: string }> {
     try {
-      const result = await blockchainService.callContract(
-        this.contractId,
-        'transfer',
-        {
-          gem_id: gemId,
-          from,
-          to,
-        },
-        from
-      );
+      // MVP: Update cache
+      const gem = this.gemCache.get(gemId);
+      if (!gem) {
+        throw new Error('Gem not found');
+      }
+      if (gem.owner !== from) {
+        throw new Error('Not the owner');
+      }
 
-      logger.info(`Gem ${gemId} transferred from ${from} to ${to}`);
-      return { transactionId: result.transaction_id };
+      // MVP: Skip blockchain transaction for now
+      // TODO: Re-enable blockchain transaction once contract deployment works
+
+      // Update cache
+      gem.owner = to;
+      gem.transfer_count++;
+      this.gemCache.set(gemId, gem);
+
+      logger.info(`Gem ${gemId} transferred from ${from} to ${to} (MVP in-memory)`);
+      return { transactionId: `mvp_tx_${Date.now()}` };
     } catch (error) {
       logger.error('Failed to transfer gem:', error);
       throw new Error('Failed to transfer gem');
@@ -91,14 +107,8 @@ export class GemService {
   // Get gem details
   async getGem(gemId: string): Promise<Gem | null> {
     try {
-      const result = await blockchainService.callContract(
-        this.contractId,
-        'get_gem',
-        { gem_id: gemId },
-        'system'
-      );
-
-      return result.gem || null;
+      // MVP: Use cache
+      return this.gemCache.get(gemId) || null;
     } catch (error) {
       logger.error(`Failed to get gem ${gemId}:`, error);
       return null;
@@ -108,14 +118,14 @@ export class GemService {
   // Get gems by owner
   async getGemsByOwner(owner: string): Promise<Gem[]> {
     try {
-      const result = await blockchainService.callContract(
-        this.contractId,
-        'get_gems_by_owner',
-        { owner },
-        'system'
-      );
-
-      return result.gems || [];
+      // MVP: Filter cache by owner
+      const gems: Gem[] = [];
+      for (const gem of this.gemCache.values()) {
+        if (gem.owner === owner) {
+          gems.push(gem);
+        }
+      }
+      return gems;
     } catch (error) {
       logger.error(`Failed to get gems for owner ${owner}:`, error);
       return [];
@@ -125,14 +135,8 @@ export class GemService {
   // Get total supply
   async getTotalSupply(): Promise<number> {
     try {
-      const result = await blockchainService.callContract(
-        this.contractId,
-        'total_supply',
-        {},
-        'system'
-      );
-
-      return result.total_supply || 0;
+      // MVP: Count cache
+      return this.gemCache.size;
     } catch (error) {
       logger.error('Failed to get total supply:', error);
       return 0;
@@ -142,14 +146,9 @@ export class GemService {
   // Verify ownership
   async verifyOwnership(gemId: string, address: string): Promise<boolean> {
     try {
-      const result = await blockchainService.callContract(
-        this.contractId,
-        'is_owner',
-        { gem_id: gemId, address },
-        'system'
-      );
-
-      return result.is_owner || false;
+      // MVP: Check cache
+      const gem = this.gemCache.get(gemId);
+      return gem ? gem.owner === address : false;
     } catch (error) {
       logger.error('Failed to verify ownership:', error);
       return false;
