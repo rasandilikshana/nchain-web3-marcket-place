@@ -47,18 +47,21 @@ const MyGemsPage = () => {
       ) : gems && gems.length > 0 ? (
         <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
           {gems.map((gem: any) => (
-            <div key={gem.id} className="card hover:shadow-xl transition-shadow">
+            <div key={gem.gem_id || gem.id} className="card hover:shadow-xl transition-shadow">
               <div className="bg-gradient-to-br from-primary-600 to-secondary-600 h-48 rounded-lg mb-4 flex items-center justify-center">
                 <Gem className="w-24 h-24 text-white" />
               </div>
               <h3 className="text-xl font-semibold mb-2">{gem.name}</h3>
               <div className="space-y-1 text-sm text-gray-400">
-                <p>Rarity: <span className="text-secondary-400">{gem.attributes.rarity}</span></p>
-                <p>Power: {gem.attributes.power}</p>
+                <p>Rarity: <span className="text-secondary-400">{gem.attributes?.rarity}</span></p>
+                <p>Color: <span className="text-primary-400">{gem.attributes?.color}</span></p>
+                <p>Power: {gem.attributes?.power}</p>
+                <p>Shine: {gem.attributes?.shine}</p>
+                <p>Durability: {gem.attributes?.durability}</p>
                 <p>Transfers: {gem.transfer_count}</p>
               </div>
               <Link
-                to={`/gem/${gem.id}`}
+                to={`/gem/${gem.gem_id || gem.id}`}
                 className="btn-primary w-full mt-4 text-center"
               >
                 View Details

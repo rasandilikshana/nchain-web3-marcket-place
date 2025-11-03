@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(curl:*)",
+      "Bash(rustup target add:*)",
+      "Bash(./build.sh:*)",
+      "Bash(cd:*)",
+      "Bash(cat:*)",
+      "Read(//media/rasan/windows-drive/Projects/**)",
+      "Bash(GEM_ID=\"gem_1762175858110_m4iklhary\")",
+      "Bash(python3:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
