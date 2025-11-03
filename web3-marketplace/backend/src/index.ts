@@ -44,19 +44,26 @@ const startServer = async () => {
   try {
     // Connect to MongoDB (optional, for caching)
     if (process.env.MONGODB_URI) {
-      await connectDatabase();
-      logger.info('MongoDB connected');
+      try {
+        await connectDatabase();
+        logger.info('✅ MongoDB connected');
+      } catch (error) {
+        logger.warn('⚠️  MongoDB connection failed, continuing without database caching');
+        logger.warn('   This is okay for development - the backend will work without MongoDB');
+      }
     } else {
-      logger.warn('MongoDB URI not provided, running without database caching');
+      logger.warn('⚠️  MongoDB URI not provided, running without database caching');
+      logger.info('   Set MONGODB_URI in .env if you want caching (optional)');
     }
 
     app.listen(PORT, () => {
       logger.info(`🚀 Server running on port ${PORT}`);
-      logger.info(`📡 nchain node: ${process.env.NCHAIN_API_URL}`);
-      logger.info(`🌍 Environment: ${process.env.NODE_ENV}`);
+      logger.info(`📡 nchain node: ${process.env.NCHAIN_API_URL || 'http://localhost:8080/api'}`);
+      logger.info(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+      logger.info(`💡 Ready to accept requests!`);
     });
   } catch (error) {
-    logger.error('Failed to start server:', error);
+    logger.error('❌ Failed to start server:', error);
     process.exit(1);
   }
 };
