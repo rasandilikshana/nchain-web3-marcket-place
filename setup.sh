@@ -153,13 +153,13 @@ cd ..
 print_step "Step 4: Setting up Web3 Marketplace"
 
 # Check if web3-marketplace exists
-if [ ! -d "nchain/web3-marketplace" ]; then
-    print_error "web3-marketplace not found in nchain directory"
+if [ ! -d "web3-marketplace" ]; then
+    print_error "web3-marketplace not found in project directory"
     print_info "Make sure you cloned the correct repository"
     exit 1
 fi
 
-cd nchain/web3-marketplace
+cd web3-marketplace
 
 # Setup Backend
 print_info "Setting up Backend..."
@@ -218,9 +218,14 @@ else
     print_warning "Some dependencies may have issues (check above)"
 fi
 
-cd ../../..
+cd ../..
 
 print_step "✅ Setup Complete!"
+
+# Create completion marker
+print_info "Creating setup completion marker..."
+echo "SETUP_COMPLETED=$(date '+%Y-%m-%d %H:%M:%S')" > .setup_complete
+print_success "Setup marker created"
 
 echo ""
 echo -e "${GREEN}╔══════════════════════════════════════════════════════════╗${NC}"
@@ -236,11 +241,11 @@ echo "  cd nchain"
 echo "  cargo run --release -- node --api-port 8080 --p2p-port 9000"
 echo ""
 echo -e "${YELLOW}Terminal 2 - Backend API:${NC}"
-echo "  cd nchain/web3-marketplace/backend"
+echo "  cd web3-marketplace/backend"
 echo "  npm run dev"
 echo ""
 echo -e "${YELLOW}Terminal 3 - Frontend:${NC}"
-echo "  cd nchain/web3-marketplace/frontend"
+echo "  cd web3-marketplace/frontend"
 echo "  npm run dev"
 echo ""
 echo -e "${CYAN}Then visit:${NC}"
